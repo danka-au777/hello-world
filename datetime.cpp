@@ -22,7 +22,7 @@ int main() {
 }
 DateTime::DateTime()
 {
-  year = 2020; month = 12; day = 8;
+  year = 2020; month = 3; day = 20;
   hour = 11; minute = 27; second = 55;
 }
 DateTime::~DateTime() 
@@ -50,7 +50,7 @@ void DateTime::showMoon(){//only 2020
     		time=time+mondays[i];
 		}
 		time=time+d;
-		j=time; printf("%d ",time);
+		j=time;
 		for(i=0;j>29;i++){
 			j=j-lu_days[i];
 		}
