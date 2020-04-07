@@ -2,7 +2,8 @@
 #include <iostream>
 class SuperPrime {
   public:
-  	SuperPrime():number(0) {
+    int number;
+  	SuperPrime(){
 	}
   	~SuperPrime() {
 	}
@@ -16,29 +17,55 @@ class SuperPrime {
   	  return false;
 	}
   private:
-  	const int number;
-  	int N[100], size;
+  	int N[100], NumSize;
   	bool isPrime(int n) { 
-  	
-  	  return false;
+  	    if(n==2)return true;
+  	  	for(int j=2;j<=n/2+1;j++){
+  	  		if(n%j==0)
+			return false;
+		}
+		return true;
 	}
 	void split() {
 	  // number split into N
+	  int i,j=1,x=number;
+	  for(i=0;x!=0;i++){
+		j*=10;
+		N[i]=(x%j)/(j/10);
+		x-=N[i]*(j/10);
+	   }
+	  NumSize=i;
 	}
 	int sum() {
-	  return 0;
+		int Sum=0;
+		for(int i=0;i<NumSize;i++){
+			Sum+=N[i];
+		}
+	  	return Sum;
 	}
 	int multi() {
-	  return 0;
+		int Multi=1;
+		for(int i=0;i<NumSize;i++){
+			Multi=Multi*N[i];
+		}
+		return Multi;
 	}
 	int squareSum() {
-	  return 0;
+		int SquareSum=0;
+		for(int i=0;i<NumSize;i++){
+			SquareSum+=N[i]*N[i];
+		}
+	  return SquareSum;
 	}
 };
 class Set {
   public:
   	Set(int from, int to) {
-  	  size = 0;
+  	  size =to-from+1;
+  	  set[0].number=from;
+  	  for(int i=1;i<size;i++){
+  	  	set[i].number=set[i-1].number+1;
+		}
 	}
   	~Set() {
 	}
@@ -46,16 +73,16 @@ class Set {
   	  int count = 0;
   	  for (int i = 0; i < size; i++)
   	    if(set[i].isSuperPrime())
-  	      count += 1;
+  	      {
+			count += 1;
+		}
 	  return count; 
 	}
   	int sum() {
   	  int sum = 0;
-  	  /*
   	  for (int i = 0; i < size; i++)
   	    if(set[i].isSuperPrime())
-  	      sum += set[i];
-  	      */ 
+  	      sum += set[i].number;
 	  return sum; 
 	}
   private:
