@@ -1,90 +1,47 @@
-//作业：删除多余的集合类，使用继承方法实现相同的功能。 
-#include <iostream>
-class Prime {
-  public:
-  	Prime():number(0) {
+#include<iostream>
+#include<vector>
+/**
+  * 定义素数对象 
+  */ 
+class Prime{
+public:
+   	Prime(int n):num_(n){
+	   }
+	Prime (const Prime &obj):num_(obj.num_){}//拷贝构造函数 
+	~Prime(){
+	   }
+	bool isPrime() const {//常函数  只做判断 不改变其他 
+		return false; 
 	}
-  	Prime(int n):number(n) {
-	}
-	~Prime() {
-	}
-  	bool isPrime() { 
-  	  //2到number-1的因子 
-  		for(int i=2;i<number;i++){
-  			if(number%i==0) return false;
-		  }
-  	 	return true;
-	}
-  private:
-  	const int number;
-}; 
-class PrimeSet {
-  public:
-  	PrimeSet(int size) {
-  	  //集合的构造什么？ 
-  	  set = new Prime*[size];
-  	  this->size = size;
-  	  index = 0;
-	}
-	~PrimeSet() {
-  	  for (int i = 0; i < index; ++i)  //销毁对象 
-		delete set[i]; 
-	  delete[] set;
-	}
- 	int count() {
-  	  int count = 0;
-  	  for (int i = 0; i < size; i++)
-  	    if(set[i]->isPrime())
-  	      count += 1;
-	  return count; 
-	}
-
-	bool add(int n) {
-	  if(index == size)  return false;
-	  Prime *p = new Prime(n);
-	  set[index] = p;
-	  index += 1;
-	  return true;
-	}
-	bool isAllPrime() {
-	  for(int i = 0; i < index; i++)
-	    if (!set[i]->isPrime())
-	      return false;
-	  return true;
+	//缺少赋值运算符  ;运算符重载  提供克隆功能以便num克隆p对象 
+	Prime& operator=(const Prime &obj){//:num_(obj.num_){//只有构造函数才能携带：num_ 
+		//this->num_ = obj.num_; //num_ read only warning 
+		return *this;
 	} 
-  private:
-  	Prime **set;
-	int size, index;
+private: 
+    const unsigned int num_;//素数属性是常量 自然数 	
 };
-class SuperPrime : public Prime {
-  public:
-  	SuperPrime():Prime(0), pset(3) {  //为什么必须有？ 
-  	}
-  	SuperPrime(int n):Prime(n), pset(3) {
-	  // number split into N
-	  int temp = n;
-	  while(temp > 0) {
-	  	int t = temp % 10;
-	  	temp /= 10;
-	  	pset.add(t);  //作业：单个数字为对象？还是和/积/平方和为对象？ 
-	  } 
-	}
-  	~SuperPrime() {
-	}
-  	bool isPrime() {   //类/对象的接口，更抽象说是外观 
-	  if (Prime::isPrime() && pset.isAllPrime())
-	    return true; 
-  	  return false;
-	}
-  private:
-  	PrimeSet pset;
-};
-
-int main() {
-  SuperPrime sp(113);
-  if (sp.isPrime())
-    std::cout << "113 is SuperPrime" << std::endl;
-  else
-    std::cout << "113 is NOT SuperPrime" << std::endl;
-  return 0;
-}
+/**
+ *这是一个统计素数数量的程序
+ *使用了STL的容器/模板技术/函数对象
+ */ 
+ int main(){
+    //构建素数对象集合 
+ 	std::vector<Prime> nums;//vector如何正确理解使用 
+ 	Prime p(2); /*用2构造一个对象*/ //此处p对象是main函数的 
+ 	nums.push_back(p);/*把p对象放入集合vector num ，  p与num实际是相互分开的在num内克隆出p 
+	 上下两个对象为在cpp中不是同一个对象 2被构造成两个对象，垃圾回收器*/ 
+	delete p;//vector中的对象是否存在，如何通知num 对象已不存在？ 
+	//遍历素数对象集合，统计素数量并输出 
+	int count=0;
+	for (std::vector<Prime>::iterator it = nums.begin();it !=nums.end();++it){
+		if(it->isPrime())/*多用自解释函数，注意函数命名规范*/ 
+			count+=1;//it对象等价于p对象 
+	} 
+	std::cout << "How many: "<<count<<std::endl;
+ 	return 0;
+ }
+ //java的虚拟机垃圾回收于克隆不同 而是对象计数器 
+ //使得delete p之后it依旧存在  
+ //垃圾回收器 p num何时能删除=>垃圾回收器的作用 
+ 
